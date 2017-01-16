@@ -19,6 +19,8 @@ if (process.env.NEW_RELIC_ENABLED) {
 }
 
 module.exports = function (env) {
+
+  console.log(env.get("ALLOWED_CORS_DOMAINS"))
   var express = require("express"),
     helmet = require("helmet"),
     i18n = require("webmaker-i18n"),

@@ -15,6 +15,7 @@ module.exports = function (sequelize, env, newrelic) {
   var RESET_EXPIRY_TIME = 1000 * 60 * 60 * 24;
   var BCRYPT_ROUNDS = 12;
 
+  console.log(__dirname + "/user.js")
   var user = sequelize.import(__dirname + "/user.js");
   var modelReferrerCode = sequelize.import(__dirname + "/modelreferrercode.js");
   var loginToken = sequelize.import(__dirname + "/loginToken.js");
