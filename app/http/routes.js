@@ -1,4 +1,4 @@
-module.exports = function (http, modelsController, webmakerAuth) {
+module.exports = function(http, modelsController, webmakerAuth) {
   var qs = require("querystring"),
     express = require("express"),
     basicAuth = express.basicAuth,
@@ -11,10 +11,10 @@ module.exports = function (http, modelsController, webmakerAuth) {
       user3: require("./controllers/user3")
     },
     userList = env.get("ALLOWED_USERS"),
-    authMiddleware = basicAuth(function (user, pass) {
+    authMiddleware = basicAuth(function(user, pass) {
       if (typeof userList === "string") {
         var arrList = {};
-        var extractUserPass = function (pair) {
+        var extractUserPass = function(pair) {
           var terms = pair.split(":");
           arrList[terms[0]] = terms[1];
         };
@@ -30,7 +30,8 @@ module.exports = function (http, modelsController, webmakerAuth) {
       }
       return false;
     }),
-    allowedCorsDomains = env.get("ALLOWED_CORS_DOMAINS") ? env.get("ALLOWED_CORS_DOMAINS").split(" ") : [],
+    allowedCorsDomains = env.get("ALLOWED_CORS_DOMAINS") ? env.get(
+      "ALLOWED_CORS_DOMAINS").split(" ") : [],
     cors = require("./cors")(allowedCorsDomains);
 
   if (env.get("ENABLE_RATE_LIMITING")) {
@@ -40,7 +41,7 @@ module.exports = function (http, modelsController, webmakerAuth) {
   userList = qs.parse(userList, ",", ":");
 
   // Persona authentication (non-admin users)
-  var checkPersona = function (req, res, next) {
+  var checkPersona = function(req, res, next) {
     if (req.session.user) {
       req.params[0] = req.session.user.email;
       next();
@@ -49,7 +50,7 @@ module.exports = function (http, modelsController, webmakerAuth) {
     }
   };
 
-  var filterAccountUpdates = function (req, res, next) {
+  var filterAccountUpdates = function(req, res, next) {
     var filtered = {},
       input = req.body;
 
@@ -73,7 +74,8 @@ module.exports = function (http, modelsController, webmakerAuth) {
   // Account
   http.get("/account", csrf, routes.site.account);
   http.post("/account/delete", csrf, checkPersona, routes.user.del);
-  http.put("/account/update", csrf, checkPersona, filterAccountUpdates, routes.user.update);
+  http.put("/account/update", csrf, checkPersona, filterAccountUpdates,
+    routes.user.update);
 
   // Resources
   http.get("/js/account.js", routes.site.js("account"));
@@ -108,8 +110,10 @@ module.exports = function (http, modelsController, webmakerAuth) {
   http.post("/auth/v2/request-reset-code", cors, webmakerAuth.handlers.requestResetCode);
   http.post("/auth/v2/reset-password", cors, webmakerAuth.handlers.resetPassword);
 
-  http.post("/auth/v2/enable-passwords", csrf, checkPersona, webmakerAuth.handlers.enablePasswords);
-  http.post("/auth/v2/remove-password", csrf, checkPersona, webmakerAuth.handlers.removePassword);
+  http.post("/auth/v2/enable-passwords", csrf, checkPersona, webmakerAuth.handlers
+    .enablePasswords);
+  http.post("/auth/v2/remove-password", csrf, checkPersona, webmakerAuth.handlers
+    .removePassword);
 
   // Needed for all options requests via CORS
   http.options("/verify", cors);
@@ -135,8 +139,10 @@ module.exports = function (http, modelsController, webmakerAuth) {
   http.options("/auth/v2/request-reset-code", cors);
   http.options("/auth/v2/reset-password", cors);
 
-  http.post("/auth/v2/enable-passwords", csrf, checkPersona, webmakerAuth.handlers.enablePasswords);
-  http.post("/auth/v2/remove-password", csrf, checkPersona, webmakerAuth.handlers.removePassword);
+  http.post("/auth/v2/enable-passwords", csrf, checkPersona, webmakerAuth.handlers
+    .enablePasswords);
+  http.post("/auth/v2/remove-password", csrf, checkPersona, webmakerAuth.handlers
+    .removePassword);
 
   http.post(
     "/api/user/authenticate",
